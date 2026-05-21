@@ -140,7 +140,7 @@ INDEX_HTML = r"""<!DOCTYPE html>
       </svg>
     </div>
     <div class="header-text">
-      <h1>CI Benchmarking → CODIFY <span class="ai-badge">✦ AI</span></h1>
+      <h1>CI Benchmarking → CODIFY <span class="ai-badge">✦ Free Local AI</span></h1>
       <p>Upload a benchmarking workbook and download a fully structured CODIFY comparison file</p>
     </div>
   </div>
@@ -184,7 +184,7 @@ INDEX_HTML = r"""<!DOCTYPE html>
              stroke-linecap="round" stroke-linejoin="round">
           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
         </svg>
-        <span id="btn-label">Convert with AI</span>
+        <span id="btn-label">Convert with Free Local AI</span>
       </button>
 
       <!-- Live progress log -->
@@ -204,7 +204,7 @@ INDEX_HTML = r"""<!DOCTYPE html>
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
-          AI reads your benchmarking sheet and maps every feature to the right CODIFY sheet automatically
+          Free local AI reads your benchmarking sheet and maps every feature to the right CODIFY sheet automatically
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -278,7 +278,7 @@ function setBusy(busy){
   } else {
     const el=document.getElementById('btn-icon');
     if(el) el.outerHTML='<svg id="btn-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
-    btnLabel.textContent='Convert with AI';
+    btnLabel.textContent='Convert with Free Local AI';
   }
 }
 
@@ -401,9 +401,9 @@ def health():
 
 if __name__ == '__main__':
     print('━' * 52)
-    print('  CI Benchmarking → CODIFY Converter  [AI-powered]')
+    print('  CI Benchmarking → CODIFY Converter  [Free local AI / Ollama]')
     print('  Open: http://127.0.0.1:5000')
-    print('  Set ANTHROPIC_API_KEY in your environment')
+    print('  Start Ollama and pull a model: ollama pull llama3.1:8b')
     print('  Press Ctrl+C to stop')
     print('━' * 52)
     app.run(host='127.0.0.1', port=5000, debug=False)

@@ -763,9 +763,46 @@ def style_data_row(ws: Worksheet, row_idx: int, n_cols: int):
         cell.border = NO_BORDER
 
 
+NA_VALUE = "NA"
+
+
+def normalize_for_excel(v):
+    """
+    Convert unavailable / blank values to 'NA' before writing to Excel.
+    Keeps valid numeric 0 and False values intact.
+    """
+    if v is None:
+        return NA_VALUE
+
+    if isinstance(v, str):
+        s = v.strip()
+        if s == "":
+            return NA_VALUE
+        if s.upper() in {"NA", "N/A", "NONE", "NULL", "-"}:
+            return NA_VALUE
+        return s
+
+    return v
+
+
 def write_row(ws: Worksheet, row_idx: int, values: list, n_cols: int):
+    """
+    Write a row to Excel and fill unavailable cells with 'NA'.
+
+    - If values has fewer entries than n_cols, remaining cells become 'NA'
+    - None / blank / N/A-like values become 'NA'
+    - Numeric 0 and False are preserved
+    """
+    values = list(values)
+
+    if len(values) < n_cols:
+        values.extend([NA_VALUE] * (n_cols - len(values)))
+
+    values = values[:n_cols]
+
     for c, v in enumerate(values, 1):
-        ws.cell(row=row_idx, column=c, value=v)
+        ws.cell(row=row_idx, column=c, value=normalize_for_excel(v))
+
     style_data_row(ws, row_idx, n_cols)
 
 
@@ -1298,11 +1335,11 @@ def populate_index(ws, products, conditions_list, registry, per_benefit_sheets=N
         ('CI Conditions:', len(conditions_list) if conditions_list else 'None detected'),
     ]
     for i, (k, v) in enumerate(rows, 3):
-        kc = ws.cell(row=i, column=1, value=k)
+        kc = ws.cell(row=i, column=1, value=normalize_for_excel(k))
         kc.font = ARIAL_10_BOLD
         kc.alignment = Alignment(horizontal='left', vertical='top')
         kc.border = NO_BORDER
-        vc = ws.cell(row=i, column=2, value=v)
+        vc = ws.cell(row=i, column=2, value=normalize_for_excel(v))
         vc.font = ARIAL_10
         vc.alignment = Alignment(horizontal='left', vertical='top')
         vc.border = NO_BORDER
@@ -1326,7 +1363,7 @@ def populate_index(ws, products, conditions_list, registry, per_benefit_sheets=N
     inv_headers = ['Sheet', 'Description', 'Rows', 'Source Coverage', 'Notes']
     hdr_row = 9
     for c_idx, h in enumerate(inv_headers, 1):
-        cell = ws.cell(row=hdr_row, column=c_idx, value=h)
+        cell = ws.cell(row=hdr_row, column=c_idx, value=normalize_for_excel(h))
         cell.font = ARIAL_10_BOLD
         cell.fill = HDR_FILL
         cell.alignment = HDR_ALIGN
@@ -1370,7 +1407,7 @@ def populate_index(ws, products, conditions_list, registry, per_benefit_sheets=N
     for i, (s, desc, rcount, cov, n) in enumerate(inventory):
         r = hdr_row + 1 + i
         for c_idx, val in enumerate([s, desc, rcount, cov, n], 1):
-            cell = ws.cell(row=r, column=c_idx, value=val)
+            cell = ws.cell(row=r, column=c_idx, value=normalize_for_excel(val))
             cell.font = ARIAL_10_BOLD if c_idx == 1 else ARIAL_10
             cell.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
             cell.border = NO_BORDER
